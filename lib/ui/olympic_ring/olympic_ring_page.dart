@@ -13,35 +13,53 @@ class OlympicRingPage extends StatefulWidget {
 }
 
 class _OlympicRingPageState extends State<OlympicRingPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+    with TickerProviderStateMixin {
+  late AnimationController _animationRingsController;
+  late AnimationController _animationFooterController;
   var alignment = const Alignment(0.0, -.6);
+  var olympicTitleBegin = 200.0;
+  var olympicTitleEnd = 200.0;
+  var yearTitleBegin = 300.0;
+  var yearTitleEnd = 300.0;
+  var buttonTitleBegin = 0.0;
+  var buttonTitleEnd = 1.0;
+  var offsetTitle = 250.0;
+  var offsetYear = 350.0;
+  var offsetButton = 500.0;
 
   _OlympicRingPageState() {
     // Start the animation in 1 seconds after screen open.
     Future.delayed(const Duration(seconds: 1))
-        .then((_) => _animationController.forward());
+        .then((_) => _animationRingsController.forward());
   }
   @override
   void initState() {
-    _animationController = AnimationController(
+    _animationRingsController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    _animationFooterController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
     );
 
-    _animationController.addListener(() {
-      if (_animationController.isCompleted) {
+    _animationRingsController.addListener(() {
+      if (_animationRingsController.isCompleted) {
         setState(() {
           alignment = const Alignment(0.0, -.2);
         });
+
+        _animationFooterController.forward();
       }
     });
+    _animationFooterController.addListener(() {});
     super.initState();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationRingsController.dispose();
+    _animationFooterController.dispose();
     super.dispose();
   }
 
@@ -62,7 +80,7 @@ class _OlympicRingPageState extends State<OlympicRingPage>
                   child: OlympicRingWidget(
                     progress: 100,
                     ringColor: Colors.blue,
-                    animation: _animationController.view,
+                    animation: _animationRingsController.view,
                   ),
                 ),
                 Positioned(
@@ -71,7 +89,7 @@ class _OlympicRingPageState extends State<OlympicRingPage>
                   child: OlympicRingWidget(
                     progress: 100,
                     ringColor: Colors.orangeAccent,
-                    animation: _animationController.view,
+                    animation: _animationRingsController.view,
                   ),
                 ),
                 Positioned(
@@ -79,7 +97,7 @@ class _OlympicRingPageState extends State<OlympicRingPage>
                   child: OlympicRingWidget(
                     progress: 100,
                     ringColor: Colors.black,
-                    animation: _animationController.view,
+                    animation: _animationRingsController.view,
                   ),
                 ),
                 Positioned(
@@ -88,7 +106,7 @@ class _OlympicRingPageState extends State<OlympicRingPage>
                   child: OlympicRingWidget(
                     progress: 100,
                     ringColor: Colors.green,
-                    animation: _animationController.view,
+                    animation: _animationRingsController.view,
                   ),
                 ),
                 Positioned(
@@ -96,25 +114,42 @@ class _OlympicRingPageState extends State<OlympicRingPage>
                   child: OlympicRingWidget(
                     progress: 100,
                     ringColor: Colors.red,
-                    animation: _animationController.view,
+                    animation: _animationRingsController.view,
                   ),
                 ),
               ],
             ),
           ),
         ),
-        _animationController.isCompleted
-            ? Align(
-                alignment: const Alignment(0, 1),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const OlympicGamesTitle(
-                        title: 'Olympic Games', offset: 250),
-                    const OlympicGamesTitle(title: '2022', offset: 280),
-                    OlympicGamesButton(offset: 400, callback: () {})
-                  ],
-                ),
+        _animationFooterController.isAnimating ||
+                _animationFooterController.isCompleted
+            ? OlympicGamesTitle(
+                title: 'Olympic Games',
+                begin: const Offset(0.0, 15.0),
+                end: const Offset(0.0, 2),
+                animation: _animationFooterController,
+              )
+            : const SizedBox(),
+        _animationFooterController.isAnimating ||
+                _animationFooterController.isCompleted
+            ? OlympicGamesTitle(
+                title: '2022',
+                animation: _animationFooterController,
+                begin: const Offset(0.0, 17.0),
+                end: const Offset(0.0, 3),
+              )
+            : const SizedBox(),
+        _animationFooterController.isAnimating ||
+                _animationFooterController.isCompleted
+            ? OlympicGamesButton(
+                animation: _animationFooterController,
+                begin: const Offset(0.0, 17.0),
+                end: const Offset(0.0, 4),
+                callback: () {
+                  setState(() {
+                    _animationFooterController.reverse();
+                  });
+                },
               )
             : const SizedBox()
       ],

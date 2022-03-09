@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 
 class OlympicGamesTitle extends StatelessWidget {
-  const OlympicGamesTitle({
+  OlympicGamesTitle({
     Key? key,
-    required this.offset,
     required this.title,
-  }) : super(key: key);
-  final double offset;
+    required this.end,
+    required this.begin,
+    required this.animation,
+  })  : _offset = Tween<Offset>(
+          begin: begin,
+          end: end,
+        ).animate(animation),
+        super(key: key);
+  final Offset begin;
+  final Offset end;
   final String title;
+  // Animation controller
+  final AnimationController animation;
+  // Animation offset
+  final Animation<Offset> _offset;
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      bottom: MediaQuery.of(context).size.height * .5,
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 2.0, end: .5),
-        curve: Curves.easeInOut,
-        duration: const Duration(seconds: 1),
+    return Align(
+      alignment: Alignment.center,
+      child: SlideTransition(
+        position: _offset,
         child: Text(
           title,
           style: const TextStyle(
@@ -23,12 +32,6 @@ class OlympicGamesTitle extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        builder: (context, value, child) {
-          return Transform.translate(
-            offset: Offset(0, offset * value),
-            child: child,
-          );
-        },
       ),
     );
   }

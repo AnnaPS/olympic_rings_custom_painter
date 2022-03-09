@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
 
 class OlympicGamesButton extends StatelessWidget {
-  const OlympicGamesButton(
-      {Key? key, required this.offset, required this.callback})
-      : super(key: key);
-  final double offset;
+  OlympicGamesButton({
+    Key? key,
+    required this.end,
+    required this.begin,
+    required this.animation,
+    required this.callback,
+  })  : _offset = Tween<Offset>(
+          begin: begin,
+          end: end,
+        ).animate(animation),
+        super(key: key);
+  final Offset begin;
+  final Offset end;
+  // Animation controller
+  final AnimationController animation;
+  // Animation offset
+  final Animation<Offset> _offset;
   final VoidCallback callback;
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      bottom: MediaQuery.of(context).size.height * .5,
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 2.0, end: .5),
-        curve: Curves.bounceIn,
-        duration: const Duration(seconds: 1),
+    return Align(
+      alignment: Alignment.center,
+      child: SlideTransition(
+        position: _offset,
         child: FloatingActionButton(
           onPressed: callback,
-          child: const Icon(Icons.local_airport),
-          splashColor: Colors.lightBlueAccent,
+          child: Icon(Icons.airplanemode_active_rounded),
         ),
-        builder: (context, value, child) {
-          return Transform.translate(
-            offset: Offset(0, offset * value),
-            child: child,
-          );
-        },
       ),
     );
   }
