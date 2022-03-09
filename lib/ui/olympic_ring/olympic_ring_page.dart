@@ -1,4 +1,6 @@
 import 'package:custom_painter/ui/olympic_ring/olympic_ring_widget.dart';
+import 'package:custom_painter/ui/olympic_ring/widgets/olympic_games_button.dart';
+import 'package:custom_painter/ui/olympic_ring/widgets/olympic_games_title.dart';
 import 'package:flutter/material.dart';
 
 class OlympicRingPage extends StatefulWidget {
@@ -102,52 +104,16 @@ class _OlympicRingPageState extends State<OlympicRingPage>
           ),
         ),
         _animationController.isCompleted
-            ? Positioned.fill(
-                bottom: MediaQuery.of(context).size.height * .5,
-                child: Align(
-                  alignment: const Alignment(0, 1),
-                  child: TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 2.0, end: .5),
-                      curve: Curves.easeInOut,
-                      duration: const Duration(seconds: 1),
-                      child: const Text(
-                        'OLYMPIC GAMES',
-                        style: TextStyle(
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      builder: (context, value, child) {
-                        return Transform.translate(
-                          offset: Offset(0, 200 * value),
-                          child: child,
-                        );
-                      }),
-                ),
-              )
-            : const SizedBox(),
-        _animationController.isCompleted
-            ? Positioned.fill(
-                bottom: MediaQuery.of(context).size.height * .45,
-                child: Align(
-                  alignment: const Alignment(0, 1),
-                  child: TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 2.0, end: .5),
-                      curve: Curves.easeInOut,
-                      duration: const Duration(seconds: 1),
-                      child: const Text(
-                        '2022',
-                        style: TextStyle(
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      builder: (context, value, child) {
-                        return Transform.translate(
-                          offset: Offset(0, 210 * value),
-                          child: child,
-                        );
-                      }),
+            ? Align(
+                alignment: const Alignment(0, 1),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const OlympicGamesTitle(
+                        title: 'Olympic Games', offset: 250),
+                    const OlympicGamesTitle(title: '2022', offset: 280),
+                    OlympicGamesButton(offset: 400, callback: () {})
+                  ],
                 ),
               )
             : const SizedBox()
